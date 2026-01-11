@@ -9,20 +9,24 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let size: CGSize = CGSize(width: 300, height: 300)
+    @State private var time : Float = 0.0
     
     var body: some View {
         VStack {
             Rectangle()
-                .frame(width: 300, height: 300)
+                .frame(width: 400, height: 300)
                 .visualEffect { content, proxy in
                     content
-                        .colorEffect(
-                            ShaderLibrary.stripes(.float2(proxy.size))
-                        )
+                        .colorEffect(ShaderLibrary.rotatingPattern(
+                            .float2(proxy.size),
+                            .float(time)
+                        ))
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 10.0))
-                .shadow(radius: 15)
+                .onAppear {
+                    Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { _ in
+                        time += 1/60.0;
+                    }
+                }
         }
     }
 }

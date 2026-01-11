@@ -173,4 +173,47 @@ half4 stripes(float2 position, half4 color, float2 size) {
 
 // Interactive Spotlight
 
-// TODO: ...
+[[ stitchable ]]
+half4 spotlight(float2 position, half4 color, float2 size, float2 lightCenter) {
+    float2 uv = position / size;
+    float2 center = uv - lightCenter; // instead of -0.5, - lightCenter since we are updating the center based off of the new position from DragGesture
+    
+    float distance = length(center);
+    
+    float circle = 1.0 - smoothstep(0.15, 0.35, distance);
+    
+    return half4(circle, circle, circle, 1.0);
+}
+
+// Coordinate Transformations
+
+[[ stitchable ]]
+half4 rotatingPattern(float2 position, half4 color, float2 size, float time) {
+    // need to rotate the coordinates using time
+    // create pattern
+    
+    float aspectRatio = size.x / size.y;
+    
+    float2 uv = position / size;
+    float2 centeredUV = uv - 0.5; // center so that pattern rotates based off of center and not (0,0)
+    centeredUV.x *= aspectRatio;
+    
+    // formulas from online
+    float cosT = cos(time);
+    float sinT = sin(time);
+    float rotX = centeredUV.x * cosT - centeredUV.y * sinT;
+    float rotY = centeredUV.x * sinT + centeredUV.y * cosT;
+    
+    float2 rotatedUV = float2(rotX, rotY); // updated uv
+    
+    float2 f = fract(rotatedUV * 3.0);
+    float2 centerCircle = (f - 0.5);
+    
+    float distance = length(centerCircle);
+    
+    float smoothCircle = 1.0 - smoothstep(0.25, 0.40, distance);
+    
+    half3 pulsingColor = half3(smoothCircle) * abs(sin(time)); // brightness pulses for extra fun!
+    
+    return half4(pulsingColor, 1.0);
+}

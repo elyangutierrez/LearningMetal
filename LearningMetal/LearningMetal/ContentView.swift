@@ -9,24 +9,29 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var time : Float = 0.0
+    @State private var temp : Float = 0.0;
     
     var body: some View {
         VStack {
-            Rectangle()
-                .frame(width: 400, height: 300)
+            Image("doggy")
+                .resizable()
+                .frame(width: 300, height: 375)
                 .visualEffect { content, proxy in
                     content
-                        .colorEffect(ShaderLibrary.rotatingPattern(
+                        .colorEffect(ShaderLibrary.warmth(
                             .float2(proxy.size),
-                            .float(time)
+                            .float(temp)
                         ))
                 }
-                .onAppear {
-                    Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { _ in
-                        time += 1/60.0;
-                    }
-                }
+            
+            Slider(value: $temp, in: -1...1)
+                .padding()
+            
+            Button(action: {
+                temp = 0.0
+            }) {
+                Text("Reset")
+            }
         }
     }
 }

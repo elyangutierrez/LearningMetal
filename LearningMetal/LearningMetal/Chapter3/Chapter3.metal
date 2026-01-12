@@ -126,3 +126,50 @@ half4 warmth(float2 position, half4 color, float2 size, float temperature) {
     
     return half4(newColor * color.a, color.a);
 }
+
+// Hue Rotation
+
+[[ stitchable ]]
+half4 hueRotate(float2 position, half4 color, float2 size, float angle) {
+    float normAngle = angle / 360.0; // normal angle between 0.0 to 1.0
+    
+    float3 hsv = rgb2hsv(float3(color.rgb)); // convert to hsv
+    float hue = hsv.x + normAngle; // hsv.x represents hue so add the angle to that
+    float nHue = fmod(hue, 1.0); // use fmod so that color is bounded 0.0 - 1.0 ( could use fract aswell )
+    float3 newHsv = float3(nHue, hsv.y, hsv.z); // reconstruct hsv
+    
+    half3 rgbColor = half3(hsv2rgb(newHsv));
+    
+    return half4(rgbColor, color.a);
+}
+
+// Gradient Mapping
+
+[[ stitchable ]]
+half4 duotone(float2 position, half4 color, float2 size) {
+    float3 weights = float3(0.299, 0.587, 0.114);
+    
+    float luminance = dot(float3(color.rgb), weights); // calc weights
+    
+    half3 deepBlue = half3(0.0, 0.145, 0.429);
+    half3 brightOrange = half3(1.0, 0.518, 0.0);
+    
+    half3 tint = half3(0.0);
+    
+    if (luminance > 0.5) {
+        // orange
+        tint = brightOrange;
+    } else {
+        // blue
+        tint = deepBlue;
+    }
+    
+    half3 mixedColor = mix(luminance, tint, 0.5); // set to 0.5 but can be altered for a higher/lower intensity
+    float newLuminance = dot(float3(mixedColor), weights); // calc new luminance based off of mixedColor
+    
+    half3 newColor = mixedColor * (luminance / newLuminance); // update mixed color with original luminance
+    
+    return half4(newColor * color.a, color.a);
+}
+
+

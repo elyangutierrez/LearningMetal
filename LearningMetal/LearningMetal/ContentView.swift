@@ -9,8 +9,6 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var temp : Float = 0.0;
-    
     var body: some View {
         VStack {
             Image("doggy")
@@ -18,20 +16,10 @@ struct ContentView: View {
                 .frame(width: 300, height: 375)
                 .visualEffect { content, proxy in
                     content
-                        .colorEffect(ShaderLibrary.warmth(
+                        .colorEffect(ShaderLibrary.duotone(
                             .float2(proxy.size),
-                            .float(temp)
                         ))
                 }
-            
-            Slider(value: $temp, in: -1...1)
-                .padding()
-            
-            Button(action: {
-                temp = 0.0
-            }) {
-                Text("Reset")
-            }
         }
     }
 }

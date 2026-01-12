@@ -9,17 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State private var startTime = Date.now
+    
     var body: some View {
         VStack {
-            Image("doggy")
-                .resizable()
-                .frame(width: 300, height: 375)
-                .visualEffect { content, proxy in
-                    content
-                        .colorEffect(ShaderLibrary.duotone(
-                            .float2(proxy.size),
-                        ))
-                }
+            TimelineView(.animation) { tl in
+                
+                let timeAfter = startTime.timeIntervalSince(tl.date)
+                
+                Rectangle()
+                    .frame(width: 300, height: 300)
+                    .visualEffect { content, proxy in
+                        content
+                            .colorEffect(ShaderLibrary.gridExplorer(
+                                .float2(proxy.size)
+                            ))
+                    }
+            }
         }
     }
 }

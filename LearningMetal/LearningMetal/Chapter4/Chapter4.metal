@@ -175,3 +175,41 @@ half4 breathingCircle(float2 position, half4 color, float2 size, float time) {
     
     return half4(newColor, 1.0);
 }
+
+// Function Composition
+
+[[ stitchable ]]
+half4 moire(float2 position, half4 color, float2 size, float time) {
+    float2 uv = position / size;
+    
+    float2 area1 = float2(0.3, 0.7);
+    float2 area2 = float2(0.8, 0.25);
+
+    // Calculate distance to source 1
+    float dist1 = distance(uv, area1);
+    // Apply sine function, multiply distance for frequency control, add time for animation
+    float wave1 = sin(dist1 * 60.0 + time * 2.0);
+
+    float dist2 = distance(uv, area2);
+    float wave2 = sin(dist2 * 85.0 + time * 3.5);
+
+    float interference = wave1 + wave2; // add the waves
+
+    float colorIntensity = interference / 1.0 + 0.5;
+
+    return half4(half3(colorIntensity), 1.0);
+}
+
+// Distortion Introduction
+
+[[ stitchable ]]
+float2 ripple(float2 position, float2 size, float time) {
+    float2 uv = position / size;
+    float2 center = uv - 0.5;
+    
+    float distance = length(center);
+    
+    float wave = sin(distance * 20.0 - time * 3.0) * 0.02;
+    
+    return position + normalize(center) * wave * size.x;
+}

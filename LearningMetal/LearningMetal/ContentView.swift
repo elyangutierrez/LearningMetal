@@ -17,14 +17,15 @@ struct ContentView: View {
                 
                 let timeAfter = startTime.timeIntervalSince(tl.date)
                 
-                Rectangle()
-                    .frame(width: 300, height: 300)
+                Image("doggy")
+                    .resizable()
+                    .frame(width: 300, height: 350)
                     .visualEffect { content, proxy in
                         content
-                            .colorEffect(ShaderLibrary.breathingCircle(
+                            .distortionEffect(ShaderLibrary.ripple(
                                 .float2(proxy.size),
                                 .float(timeAfter)
-                            ))
+                            ), maxSampleOffset: .zero)
                     }
             }
         }

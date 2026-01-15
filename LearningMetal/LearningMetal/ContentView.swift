@@ -21,8 +21,9 @@ struct ContentView: View {
                     .frame(width: 300, height: 300)
                     .visualEffect { content, proxy in
                         content
-                            .colorEffect(ShaderLibrary.gridExplorer(
-                                .float2(proxy.size)
+                            .colorEffect(ShaderLibrary.breathingCircle(
+                                .float2(proxy.size),
+                                .float(timeAfter)
                             ))
                     }
             }

@@ -157,3 +157,21 @@ half4 gridExplorer(float2 position, half4 color, float2 size) {
     
     return half4(finalColor, 1.0);
 }
+
+// Smoothstep Animation
+
+[[ stitchable ]]
+half4 breathingCircle(float2 position, half4 color, float2 size, float time) {
+    float2 uv = position / size;
+    float2 center = uv - 0.5;
+    
+    float distance = length(center);
+    
+    float pulse = (distance + abs(sin(time * 0.5)) * 0.15); // sine freq in half and rate is slow
+    
+    float smooth = 1.0 - smoothstep(0.33, 0.4, pulse);
+    
+    half3 newColor = half3(smooth * abs(sin(time)), smooth * 0.3, smooth * 0.8); // use random numbers and time to get color
+    
+    return half4(newColor, 1.0);
+}
